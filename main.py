@@ -1,5 +1,6 @@
 from telebot import util, types, TeleBot
 import time
+import json
 from logging import getLogger, basicConfig, INFO, StreamHandler, FileHandler
 from poster import RSSPoster
 from database import Database
@@ -18,7 +19,12 @@ basicConfig(
     level=INFO)
 logger = getLogger(__name__)
 
-TELEGRAM_BOT_TOKEN = os.environ.get("TELEGRAM_BOT_TOKEN")
+with open("api.json", "r") as APIDataFH:
+    _api_data_json = json.load(APIDataFH)
+    TELEGRAM_BOT_TOKEN = _api_data_json[0]['bot_api_key']
+    OWNER_ID = _api_data_json[0]['bot_owner_id']
+
+# TELEGRAM_BOT_TOKEN = os.environ.get("TELEGRAM_BOT_TOKEN") # if you want to use this again, comment the call to setup() at the end of the file
 bot = TeleBot(TELEGRAM_BOT_TOKEN, parse_mode="HTML")
 
 poster = RSSPoster()
@@ -66,7 +72,7 @@ def update(message):
 
 
 def update_all():
-    OWNER_ID = os.environ.get("OWNER_ID")
+    # OWNER_ID = os.environ.get("OWNER_ID")
     logger.info("Updating all channels")
     message = bot.send_message(OWNER_ID, "Updating all channels ⏳...")
     feeds = poster.FEEDS

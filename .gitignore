@@ -6,3 +6,5 @@ channel_links.db
 *.env*
 tests.py
 temp.html
+api.json
+
